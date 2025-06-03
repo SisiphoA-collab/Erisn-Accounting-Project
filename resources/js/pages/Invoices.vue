@@ -24,6 +24,7 @@
           <td>
             <button class="btn btn-sm btn-primary" @click="editInvoice(invoice)">Edit</button>
             <button class="btn btn-sm btn-danger" @click="deleteInvoice(invoice.id)">Delete</button>
+            <button class="btn btn-sm btn-success" @click="payInvoice(invoice.id)" v-if="invoice.status !== 'Paid'">Pay Now</button>
           </td>
         </tr>
       </tbody>
@@ -126,6 +127,17 @@ export default {
         axios.delete(`/api/invoices/${id}`)
           .then(() => this.fetchInvoices());
       }
+    },
+    payInvoice(invoiceId) {
+      axios.post('/api/paystack/initialize', { invoice_id: invoiceId })
+        .then(res => {
+          const url = res.data.authorization_url;
+          window.location.href = url; // Redirect to Paystack
+        })
+        .catch(err => {
+          alert('Failed to initiate payment');
+          console.error(err);
+        });
     },
     closeModal(){
       this.showModal = false;

@@ -24,6 +24,26 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function initializePaystack(Request $request)
+    {
+        $invoice = Invoice::findOrFail($request->invoice_id);
+        $customer = $invoice->customer;
+
+        $data = [
+            "email" => $customer->email,
+            "amount" => $invoice->amount * 100, // Paystack uses kobo
+            "callback_url" => url('/api/paystack/callback?invoice_id=' . $invoice->id),
+        ];
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer sk_test_44ded719e57730f861636fefbb857ae6fdee42f0'. env('PAYSTACK_SECRET_KEY'),
+            'Content-Type' => 'application/json',
+        ])->post('https://api.paystack.co/transaction/initialize', $data);
+
+        return response()->json([
+            'authorization_url' => $response['data']['authorization_url']
+        ]);
+    }
 
 
     /**
@@ -34,15 +54,15 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $payment = Payment::create($request->all());
+        // $payment = Payment::create($request->all());
 
-        //Decreace Customer Balance 
-        $invoice = Invoice::find($payment->invoice_id);
-        $customer = Customer::find($invoice->customer_id);
-        $customer->balance -= $payment->amount;
-        $customer->save();
+        // //Decreace Customer Balance 
+        // $invoice = Invoice::find($payment->invoice_id);
+        // $customer = Customer::find($invoice->customer_id);
+        // $customer->balance -= $payment->amount;
+        // $customer->save();
 
-        return $payment;
+        // return $payment;
     }
 
     /**
@@ -78,5 +98,42 @@ class PaymentController extends Controller
     {
         //
     }
+
+    public function paystackCallback(Request $request)
+    {
+        $invoice = Invoice::findOrFail($request->invoice_id);
+
+        $trxRef = $request->query('reference');
+        
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer sk_test_44ded719e57730f861636fefbb857ae6fdee42f0' . env('PAYSTACK_SECRET_KEY'),
+        ])->get("https://api.paystack.co/transaction/verify/{$trxRef}");
+
+        if ($response['data']['status'] === 'success') {
+            $paymentAmount = $response['data']['amount'] / 100;
+
+            // 1. Update invoice status
+            $invoice->status = 'Paid';
+            $invoice->save();
+
+            // 2. Reduce customer balance
+            $customer = $invoice->customer;
+            $customer->balance -= $paymentAmount;
+            $customer->save();
+
+            // 3. Optional: Save payment record
+            Payment::create([
+                'invoice_id' => $invoice->id,
+                'amount' => $paymentAmount,
+                'method' => 'Paystack',
+                'payment_date' => now(),
+            ]);
+
+            //return response()->json(['message' => 'Payment verified and recorded.']);
+            return redirect('/#/invoices?payment=success');
+        }
+        return response()->json(['message' => 'Payment verification failed.'], 400);
+    }
+
 
 }
