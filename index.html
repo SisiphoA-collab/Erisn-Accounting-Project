@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erisn Accounting</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Vue.js -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .sidebar {
+      min-height: 100vh;
+      background-color: #343a40;
+      color: white;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: white;
+      padding: 10px;
+      display: block;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+    }
+    .main-content {
+      padding: 20px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 15px;
+      text-align: center;
+    }
+    .card-stats {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-none d-md-block sidebar">
+          <div class="logo">Erisn Accounting</div>
+          <a href="#/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+          <a href="#/accounts"><i class="fas fa-book"></i> Chart of Accounts</a>
+          <a href="#/customers"><i class="fas fa-users"></i> Customers</a>
+          <a href="#/vendors"><i class="fas fa-store"></i> Vendors</a>
+          <a href="#/invoices"><i class="fas fa-file-invoice"></i> Invoices</a>
+          <a href="#/expenses"><i class="fas fa-money-bill"></i> Expenses</a>
+          <a href="#/stipends"><i class="fas fa-hand-holding-usd"></i> Stipends</a>
+          <a href="#/banking"><i class="fas fa-bank"></i> Banking</a>
+          <a href="#/reports"><i class="fas fa-chart-bar"></i> Reports</a>
+          <a href="#/settings"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+        <!-- Main Content -->
+        <main class="col-md-10 main-content">
+          <router-view></router-view>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue Router -->
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
+  <!-- Axios for API Calls -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const { createApp } = Vue;
+    const { createRouter, createWebHashHistory } = VueRouter;
+
+    // Dashboard Component
+    const Dashboard = {
+      template: `
+        <div>
+          <h1>Dashboard</h1>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <h5 class="card-title">Income</h5>
+                  <p class="card-text">$12,345.67</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <h5 class="card-title">Expenses</h5>
+                  <p class="card-text">$8,765.43</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card card-stats">
+                <div class="card-body">
+                  <h5 class="card-title">Profit/Loss</h5>
+                  <p class="card-text">$3,580.24</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Recent Activity</h3>
+              <ul class="list-group">
+                <li class="list-group-item">Invoice #1234 sent to Customer A</li>
+                <li class="list-group-item">Expense $500 recorded</li>
+                <li class="list-group-item">Stipend paid to Learner B</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3>Quick Actions</h3>
+              <button class="btn btn-primary me-2" @click="createInvoice">New Invoice</button>
+              <button class="btn btn-secondary me-2" @click="addExpense">Add Expense</button>
+              <button class="btn btn-success" @click="manageStipends">Manage Stipends</button>
+            </div>
+          </div>
+        </div>
+      `,
+      methods: {
+        createInvoice() {
+          alert('Redirect to create invoice page');
+          this.$router.push('/invoices/new');
+        },
+        addExpense() {
+          alert('Redirect to add expense page');
+          this.$router.push('/expenses/new');
+        },
+        manageStipends() {
+          alert('Redirect to stipends page');
+          this.$router.push('/stipends');
+        }
+      }
+    };
+
+    // Customers Component
+    const Customers = {
+      template: `
+        <div>
+          <h1>Customers</h1>
+          <button class="btn btn-primary mb-3" @click="addCustomer">Add Customer</button>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Balance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="customer in customers" :key="customer.id">
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.balance }}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" @click="editCustomer(customer.id)">Edit</button>
+                  <button class="btn btn-sm btn-danger" @click="deleteCustomer(customer.id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `,
+      data() {
+        return {
+          customers: [
+            { id: 1, name: 'Customer A', email: 'customerA@example.com', balance: '$500.00' },
+            { id: 2, name: 'Customer B', email: 'customerB@example.com', balance: '$1200.00' }
+          ]
+        };
+      },
+      methods: {
+        addCustomer() {
+          alert('Add customer form');
+        },
+        editCustomer(id) {
+          alert(`Edit customer ${id}`);
+        },
+        deleteCustomer(id) {
+          alert(`Delete customer ${id}`);
+          this.customers = this.customers.filter(c => c.id !== id);
+        }
+      }
+    };
+
+    // Invoices Component
+    const Invoices = {
+      template: `
+        <div>
+          <h1>Invoices</h1>
+          <button class="btn btn-primary mb-3" @click="createInvoice">Create Invoice</button>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Invoice ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="invoice in invoices" :key="invoice.id">
+                <td>{{ invoice.id }}</td>
+                <td>{{ invoice.customer }}</td>
+                <td>{{ invoice.amount }}</td>
+                <td>{{ invoice.status }}</td>
+                <td>{{ invoice.due_date }}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" @click="editInvoice(invoice.id)">Edit</button>
+                  <button class="btn btn-sm btn-danger" @click="deleteInvoice(invoice.id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `,
+      data() {
+        return {
+          invoices: [
+            { id: 'INV001', customer: 'Customer A', amount: '$1000.00', status: 'Sent', due_date: '2025-06-01' },
+            { id: 'INV002', customer: 'Customer B', amount: '$750.00', status: 'Paid', due_date: '2025-05-15' }
+          ]
+        };
+      },
+      methods: {
+        createInvoice() {
+          alert('Create invoice form');
+        },
+        editInvoice(id) {
+          alert(`Edit invoice ${id}`);
+        },
+        deleteInvoice(id) {
+          alert(`Delete invoice ${id}`);
+          this.invoices = this.invoices.filter(i => i.id !== id);
+        }
+      }
+    };
+
+    // Stipends Component
+    const Stipends = {
+      template: `
+        <div>
+          <h1>Stipends</h1>
+          <button class="btn btn-primary mb-3" @click="addStipend">Add Stipend</button>
+          <button class="btn btn-secondary mb-3" @click="importCSV">Import CSV</button>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Learner</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Month</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="stipend in stipends" :key="stipend.id">
+                <td>{{ stipend.learner }}</td>
+                <td>{{ stipend.amount }}</td>
+                <td>{{ stipend.status }}</td>
+                <td>{{ stipend.month }}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" @click="uploadReceipt(stipend.id)">Upload Receipt</button>
+                  <button class="btn btn-sm btn-danger" @click="deleteStipend(stipend.id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `,
+      data() {
+        return {
+          stipends: [
+            { id: 1, learner: 'Learner A', amount: '$200.00', status: 'Pending', month: 'May 2025' },
+            { id: 2, learner: 'Learner B', amount: '$200.00', status: 'Paid', month: 'April 2025' }
+          ]
+        };
+      },
+      methods: {
+        addStipend() {
+          alert('Add stipend form');
+        },
+        importCSV() {
+          alert('Import CSV file');
+        },
+        uploadReceipt(id) {
+          alert(`Upload receipt for stipend ${id}`);
+        },
+        deleteStipend(id) {
+          alert(`Delete stipend ${id}`);
+          this.stipends = this.stipends.filter(s => s.id !== id);
+        }
+      }
+    };
+
+    // Router Configuration
+    const routes = [
+      { path: '/', redirect: '/dashboard' },
+      { path: '/dashboard', component: Dashboard },
+      { path: '/customers', component: Customers },
+      { path: '/invoices', component: Invoices },
+      { path: '/stipends', component: Stipends },
+      { path: '/accounts', component: { template: '<h1>Chart of Accounts</h1><p>Manage your accounts here.</p>' } },
+      { path: '/vendors', component: { template: '<h1>Vendors</h1><p>Manage vendors here.</p>' } },
+      { path: '/expenses', component: { template: '<h1>Expenses</h1><p>Record expenses here.</p>' } },
+      { path: '/banking', component: { template: '<h1>Banking</h1><p>Manage bank accounts here.</p>' } },
+      { path: '/reports', component: { template: '<h1>Reports</h1><p>Generate financial reports here.</p>' } },
+      { path: '/settings', component: { template: '<h1>Settings</h1><p>Configure settings here.</p>' } }
+    ];
+
+    const router = createRouter({
+      history: createWebHashHistory(),
+      routes
+    });
+
+    // Create Vue App
+    const app = createApp({});
+    app.use(router);
+    app.mount('#app');
+  </script>
+</body>
+</html>
