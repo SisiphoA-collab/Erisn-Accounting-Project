@@ -1,0 +1,27 @@
+.sidebar {
+      min-height: 100vh;
+      background-color: #343a40;
+      color: white;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: white;
+      padding: 10px;
+      display: block;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+    }
+    .main-content {
+      padding: 20px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 15px;
+      text-align: center;
+    }
+    .card-stats {
+      margin-bottom: 20px;
+    }
