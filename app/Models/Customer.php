@@ -9,19 +9,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends Model
 {
+
+    Use hasFactory;
+
     protected $fillable = [
+        'user_id',
         'company_id',
         'name',
         'email',
         'balance'
     ];
 
-    public function company() {
-        return $this->belongsTo(Company::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
-    public function invoices() {
-        return $this->hasMany(Invoice::class);
-    }
+    Schema::table('customers', function (Blueprint $table) {
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+});
 
 }

@@ -7,76 +7,43 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $customer = Customer::all();
-
-        return response()->json([
-            'customers' => $customer,
-        ]);
+        $customers = Customer::where('user_id', auth()->id())->get();
+        return response()->json(['customers' => $customers]);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'company_id' => 'required',
-            'name' => 'required|string|max:255',
-            'balance' => 'required|numeric|min:0',
+            'company_id' => 'required|integer',
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'balance' => 'required|numeric',
         ]);
 
-        $customer = Customer::create($request->all());
+        $customer = Customer::create([
+            'user_id' => auth()->id(),
+            'company_id' => $request->company_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'balance' => $request->balance,
+        ]);
 
         return response()->json($customer, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Customer $customer)
+    public function update(Request $request, $id)
     {
-        $customer = Customer::findOrFail($id);
+        $customer = Customer::where('user_id', auth()->id())->findOrFail($id);
+        $customer->update($request->only(['company_id', 'name', 'email', 'balance']));
         return response()->json($customer);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Customer $customer)
+    public function destroy($id)
     {
-         $customer->update($request->all());
-
-        return response()->json($customer);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Customer $customer)
-    {
+        $customer = Customer::where('user_id', auth()->id())->findOrFail($id);
         $customer->delete();
-
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Customer deleted']);
     }
 }
