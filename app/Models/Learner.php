@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Learner extends Model
+{
+    protected $fillable = ['name', 'email', 'program', 'status'];
+}
+
