@@ -7,7 +7,6 @@
             <div class="fs-4 py-2 px-1">Erisn Accounting
               <hr/>
             </div>
-
             <a href="#/dashboard" :class="[isActive('/dashboard')]" ><i class="fas fa-home"></i> Dashboard</a>
             <a href="#/accounts" :class="[isActive('/accounts')]"><i class="fas fa-book"></i> Chart of Accounts</a>
             <a href="#/customers" :class="[isActive('/customers')]"><i class="fas fa-users"></i> Customers</a>
