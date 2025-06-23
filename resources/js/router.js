@@ -12,6 +12,7 @@ import Stipends from './pages/Stipends.vue';
 import Banking from './pages/Banking.vue';
 import Reports from './pages/Reports.vue';
 import Settings from './pages/Settings.vue';
+import InvoiceDetails from './Components/Invoice.vue';
 
 const routes = [
   { path: '/', redirect: '/dashboard' },
@@ -26,6 +27,8 @@ const routes = [
   { path: '/banking', component: Banking },
   { path: '/reports', component: Reports },
   { path: '/settings', component: Settings },
+  {path:'/invoices/show/:id',name: 'invoice.show',component: InvoiceDetails, props:true},
+  { path: '/stipends/:id/upload', name:'stipend.upload', component: Stipends, props:true },
 ];
 
 const router = createRouter({
