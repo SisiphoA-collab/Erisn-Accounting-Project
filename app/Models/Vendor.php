@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Vendor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -21,4 +22,5 @@ class Vendor extends Model
     public function expenses() {
     return $this->hasMany(Expense::class);
     }
+
 }
