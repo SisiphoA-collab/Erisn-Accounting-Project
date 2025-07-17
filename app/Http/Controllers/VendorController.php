@@ -12,14 +12,24 @@ class VendorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $vendors = Vendor::all();
+    public function index(Request $request)
+{
+    $query = Vendor::query();
 
-        return response()->json([
-            'vendors' => $vendors,
-        ]);
+    if ($request->has('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%')
+              ->orWhere('email', 'like', '%' . $request->search . '%');
     }
+
+    if ($request->has('status') && $request->status !== 'All') {
+        $query->where('status', $request->status); // assuming you have a status column
+    }
+
+    $vendors = $query->orderBy('id', 'desc')->paginate(10);
+
+    return response()->json($vendors);
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -29,7 +39,21 @@ class VendorController extends Controller
      */
     public function store(Request $request)
     {
-        return Vendor::create($request->all());
+        $request->validate([
+            'company_id' => 'required|integer',
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'balance' => 'required|numeric',
+        ]);
+        
+        $vendor = Vendor::create([
+            'company_id' => $request->company_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'balance' => $request->balance,
+        ]);
+
+        return response()->json($vendor, 201);
     }
 
     /**
@@ -38,7 +62,7 @@ class VendorController extends Controller
      * @param  \App\Models\Vendor  $vendor
      * @return \Illuminate\Http\Response
      */
-    public function show(Vendor $vendor)
+    public function show(Vendor $id)
     {
         $vendor = Vendor::findOrFail($id);
         return response()->json($vendor);
@@ -51,10 +75,10 @@ class VendorController extends Controller
      * @param  \App\Models\Vendor  $vendor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vendor $vendor)
+    public function update(Request $request, $id)
     {
-        $vendor->update($request->all());
-        
+        $vendor = Vendor::findOrFail($id);
+        $vendor->update($request->only(['company_id', 'name', 'email', 'balance']));
         return response()->json($vendor);
     }
 
@@ -64,10 +88,10 @@ class VendorController extends Controller
      * @param  \App\Models\Vendor  $vendor
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Vendor $vendor)
+    public function destroy($id)
     {
+        $vendor = Vendor::findOrFail($id);
         $vendor->delete();
-
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Vendor deleted']);
     }
 }
