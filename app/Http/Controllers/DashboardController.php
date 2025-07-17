@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Invoice;
-use App\Models\Customer;
 use App\Models\Stipend;
 use Carbon\Carbon;
 
@@ -20,14 +17,14 @@ class DashboardController extends Controller
     public function index()
     {
         $sentInvoice = Invoice::with(['customer:id,name'])
-        ->select(['id', 'status', 'customer_id','updated_at'])
-        ->where('status', 'Sent')
-        ->orderBy('updated_at', 'desc')->first();
+            ->select(['id', 'status', 'customer_id', 'updated_at'])
+            ->where('status', 'Sent')
+            ->orderBy('updated_at', 'desc')->first();
 
         $paidLearner = Stipend::with(['learner:id,name'])
-        ->select(['id', 'status', 'learner_id','updated_at'])
-        ->where('status', 'Paid')
-        ->orderBy('updated_at', 'desc')->first();
+            ->select(['id', 'status', 'learner_id', 'updated_at'])
+            ->where('status', 'Paid')
+            ->orderBy('updated_at', 'desc')->first();
 
         $currentYear = now()->year;
 
@@ -133,45 +130,11 @@ class DashboardController extends Controller
             'datasets' => array_values($statusMap),
         ]);
     }
-
-    // public function chart()
-    // {
-    //     $invoices = Invoice::selectRaw("MONTH(created_at) as month, status, SUM(amount) as total")
-    //         ->groupBy('month', 'status')
-    //         ->orderBy('month', 'asc')
-    //         ->get();
-
-    //     $formattedData = [
-    //         // 'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-    //         'datasets' => [
-    //             ['label' => 'Paid', 'data' => [], 'backgroundColor' => '#4CAF50'],
-    //             ['label' => 'Draft', 'data' => [], 'backgroundColor' => '#2196F3'],
-    //             ['label' => 'Overdue', 'data' => [], 'backgroundColor' => '#F44336'],
-    //             ['label' => 'Sent', 'data' => [], 'backgroundColor' => '#FFC107'],
-    //         ],
-    //     ];
-
-    //     foreach ($invoices as $invoice) {
-    //         $monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    //         $index = $monthLabels[$invoice->month - 1];
-    //         switch ($invoice->status) {
-    //             case 'Paid':
-    //                 $formattedData['datasets'][0]['data'][$index] = $invoice->total;
-    //                 break;
-    //             case 'Draft':
-    //                 $formattedData['datasets'][1]['data'][$index] = $invoice->total;
-    //                 break;
-    //             case 'Overdue':
-    //                 $formattedData['datasets'][2]['data'][$index] = $invoice->total;
-    //                 break;
-    //             case 'Sent':
-    //                 $formattedData['datasets'][3]['data'][$index] = $invoice->total;
-    //                 break;
-    //         }
-    //     }
-
-    //     return $formattedData;
-    // }
+    /**
+     * Get the total amount of paid invoices.
+     *
+     * @return float
+     */
     public function invoicePaid()
     {
         return Invoice::where('status', 'Paid')->sum('amount');
@@ -180,77 +143,4 @@ class DashboardController extends Controller
     {
         return Invoice::where('status', 'Overdue')->orWhere('status', 'Sent')->sum('amount');
     }
-
-
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    // public function store(Request $request)
-    // {
-    //     $invoice = Invoice::create($request->all());
-
-    //     //increase customer balance
-    //     $customer = Customer::Find($invoice->customer_id);
-    //     $customer->balance += $invoice->amount;
-    //     $customer->save();
-
-    //     return response()->json([$invoice, 'message' => 'Invoices created successfully.']);
-    // }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function show($id)
-    // {
-    //     $invoice = Invoice::with('customer.company')->findOrFail($id);
-    //     return response()->json($invoice);
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function update(Request $request, $id)
-    // {
-    //     $invoice = Invoice::findOrFail($id);
-    //     $oldAmount = (float) $invoice->amount;
-    //     $newAmount = (float) $request->amount;
-    //     $balanceDelta = $newAmount - $oldAmount;
-
-    //     //increase or decrease customer balance
-    //     $customer = Customer::Find($invoice->customer_id);
-    //     $customer->balance += $balanceDelta;
-    //     $customer->save();
-    //     $invoice->update($request->all());
-    //     return response()->json([$invoice, 'message' => 'Invoice updated successfully.', 'type' => 'success']);
-    // }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function destroy($id)
-    // {
-    //     $invoice = Invoice::findOrFail($id);
-    //    //decrease customer balance
-    //     $customer = Customer::Find($invoice->customer_id);
-    //     $customer->balance -= $invoice->amount;
-    //     $customer->save();
-    //     $invoice->delete();
-    //     return response()->json(['message' => 'Invoice deleted', 'type' => 'message']);
-    // }
 }

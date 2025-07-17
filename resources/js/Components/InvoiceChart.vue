@@ -1,7 +1,7 @@
 <template>
   <hr />
   <div class="container rounded">
-    <h2 class="h4 text-center text-muted bold">Invoices Overview</h2>
+    <h4 class="text-center text-muted fw-bold ">Invoices Overview</h4>
     <div class="container">
       <div class="row">
         <!-- Invoice Bar Graph -->
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import StatCard from '@/Components/StatCard.vue'
 import { Chart } from 'chart.js/auto'
 

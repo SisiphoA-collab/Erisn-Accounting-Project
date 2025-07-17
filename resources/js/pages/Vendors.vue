@@ -1,6 +1,5 @@
 <template>
         <div>
-          <h1>Vendors</h1>
           <button class="btn btn-primary mb-3" @click="addVendor">Add Vendor</button>
           <table class="table table-striped">
             <thead>
@@ -73,6 +72,8 @@
 import axios from 'axios';
 
 export default {
+    components: {
+    },
   data() {
     return {
       vendors: [],

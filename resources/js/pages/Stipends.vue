@@ -5,8 +5,6 @@
   </div>
 
   <div>
-    <h1 class="text-outline">Stipends List</h1>
-    <hr />
     <button class="btn btn-primary mb-3 p-2" @click="addStipend">Add Learner Stipend</button>
     <button class="btn btn-secondary mb-3 p-2 mx-2" @click="importCSV">Import CSV</button>
 
@@ -121,8 +119,7 @@
                 </option>
               </select>
             </div>
-
-
+            
             <div class="mb-3">
               <label class="form-label">month</label>
               <select class="form-select" v-model="form.month" required>
@@ -130,18 +127,6 @@
                   {{ month }} {{ currentYear }}
                 </option>
               </select>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Upload Receipt:</label>
-              <div v-if="form.status === 'Paid'" class="d-flex flex-row">
-                <input type="file" class="border form-control-sm mx-1"
-                  @change="e => selectedFiles[form.id] = e.target.files[0]" required />
-              </div>
-
-              <p v-else class="form-control-sm p-2 text-muted border" disabled>
-                Not uploaded - <span class="text-muted fst-italic">change status to upload receipt.</span>
-              </p>
             </div>
 
             <div class="mt-5 p-2 d-flex">
