@@ -14,7 +14,7 @@
     <InvoiceDetails ref="invoiceDetailsRef" :invoice="invoice" />
   </div>
 
-  <div class="d-flex w-custom mx-auto">
+  <div class="d-flex mx-auto">
     <!-- Back Button -->
     <div class="d-flex w-50 pb-4">
       <button href="#" class="btn btn-outline-secondary" @click="$router.go(-1)">⬅️ Back</button>
@@ -22,25 +22,15 @@
 
     <!-- Action Buttons -->
     <div class="d-flex flex-row w-50 justify-end pb-4">
-      <!-- <button class="btn btn-success ms-2" @click="emailInvoice(invoice.id)">
-        Email Invoice
-      </button> -->
-
       <button class="btn btn-success ms-2" @click="emailInvoice" :disabled="sending">
+        <span v-if="sending" class="spinner-border spinner-border-sm me-2"></span>
         <i class="fas fa-envelope px-2"></i>{{ sending ? 'Sending Email...' : 'Email Invoice' }}
       </button>
 
-      <div v-if="sending" class="spinner-border text-primary px-2" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-
-
       <button class="btn btn-primary ms-2" @click="downloadInvoice" :disabled="loading">
+        <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
         <i class="fas fa-download px-2"></i>{{ loading ? 'Downloding PDF...' : 'Download PDF' }}
       </button>
-      <div v-if="loading" class="spinner-border text-primary px-2" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
     </div>
   </div>
 </template>

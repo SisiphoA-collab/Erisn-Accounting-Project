@@ -15,17 +15,15 @@
 
 
 <script setup>
-import { defineProps } from 'vue';
-
 defineProps({
     invoiceStats: Array
 });
 
 const statusColors = {
-    'Draft': 'bg-custom-blue text-white',
-    'Paid': 'bg-custom-green text-white',
-    'Sent': 'bg-custom-yellow text-white',
-    'Overdue': 'bg-custom-red text-white'
+    'Draft': 'bg-custom-blue',
+    'Paid': 'bg-custom-green',
+    'Sent': 'bg-custom-yellow',
+    'Overdue': 'bg-custom-red'
 };
 </script>
 

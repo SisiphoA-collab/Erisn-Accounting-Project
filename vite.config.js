@@ -17,4 +17,13 @@ export default defineConfig({
             '@': '/resources/js',
         },
     },
+    server: {
+    watch: {
+      ignored: [
+        '**/vendor/**',
+        '**/storage/**',
+        '**/routes/**', // prevent PHP files from triggering reloads
+      ]
+    }
+  }
 });
