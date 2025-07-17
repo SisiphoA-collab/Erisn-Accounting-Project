@@ -12,44 +12,44 @@
                         <hr />
                     </div>
 
-                    <a href="#/dashboard" :class="[isActive('/dashboard'), 'px-3']">
+                    <a href="#/dashboard" :class="[isActive('/dashboard')]">
                         <i class="fas fa-home" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard"></i>
                         <span class=""> Dashboard </span></a>
-                    <a href="#/accounts" :class="[isActive('/accounts'), 'px-3']">
+                    <a href="#/accounts" :class="[isActive('/accounts')]">
                         <i class="fas fa-book" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Chart of accounts"></i><span class=""> Chart of
                             Accounts</span> </a>
-                    <a href="#/customers" :class="[isActive('/customers'), 'px-3']">
+                    <a href="#/customers" :class="[isActive('/customers')]">
                         <i class="fas fa-users" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Customers"></i>
                         <span class=""> Customers</span></a>
-                    <a href="#/vendors" :class="[isActive('/vendors'), 'px-3']">
+                    <a href="#/vendors" :class="[isActive('/vendors')]">
                         <i class="fas fa-store" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Vendors"></i><span class=""> Vendors</span></a>
-                    <a href="#/invoices" :class="[isActive('/invoices'), 'px-3']">
+                    <a href="#/invoices" :class="[isActive('/invoices')]">
                         <i class="fas fa-file-invoice" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Invoices"></i>
                         <span class=""> Invoices</span></a>
-                    <a href="#/payments" :class="[isActive('/payments'), 'px-3']">
+                    <a href="#/payments" :class="[isActive('/payments')]">
                         <i class="fas fa-dollar-sign" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Payments"></i>
                         <span class=""> Payments</span></a>
-                    <a href="#/expenses" :class="[isActive('/expenses'), 'px-3']">
+                    <a href="#/expenses" :class="[isActive('/expenses')]">
                         <i class="fas fa-money-bill" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Expenses"></i>
                         <span class=""> Expenses</span></a>
-                    <a href="#/stipends" :class="[isActive('/stipends'), 'px-3']">
+                    <a href="#/stipends" :class="[isActive('/stipends')]">
                         <i class="fas fa-hand-holding-usd" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Stipends"></i>
                         <span class=""> Stipends</span></a>
-                    <a href="#/banking" :class="[isActive('/banking'), 'px-3']">
+                    <a href="#/banking" :class="[isActive('/banking')]">
                         <i class="fas fa-bank" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Banking"></i><span class=""> Banking</span></a>
-                    <a href="#/reports" :class="[isActive('/reports'), 'px-3']">
+                    <a href="#/reports" :class="[isActive('/reports')]">
                         <i class="fas fa-chart-bar" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Reports"></i>
                         <span class=""> Reports</span></a>
-                    <a href="#/settings" :class="[isActive('/settings'), 'px-3']">
+                    <a href="#/settings" :class="[isActive('/settings')]">
                         <i class="fas fa-cog" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="Settings"></i><span class=""> Settings</span></a>
                 </nav>
