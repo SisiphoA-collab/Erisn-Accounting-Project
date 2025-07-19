@@ -5,13 +5,6 @@
   </div>
 
   <div>
-    <h1 class="text-outline">Stipends List</h1>
-    <div class="mb-3">
-      <p><strong>Paid Learners:</strong> {{ paidLearnersCount }}</p>
-      <p><strong>Pending Learners:</strong> {{ pendingLearnersCount }}</p>
-    </div>
-    <hr />
-   
     <button class="btn btn-primary mb-3 p-2" @click="addStipend">Add Learner Stipend</button>
     <button class="btn btn-secondary mb-3 p-2 mx-2" @click="triggerCSVInput">Import CSV</button>
     <input type="file" ref="csvInput" accept=".csv" style="display: none;" @change="importCSV" />
@@ -177,7 +170,7 @@
                 <option v-for="status in statusOption" :key="status" :value="status">{{ status }}</option>
               </select>
             </div>
-
+            
             <div class="mb-3">
               <label class="form-label">Month</label>
               <select class="form-select" v-model="form.month" required>

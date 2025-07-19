@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Customer;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Browsershot\Browsershot;
-
-use function PHPSTORM_META\type;
 
 class InvoiceController extends Controller
 {
@@ -125,6 +122,7 @@ class InvoiceController extends Controller
             'invoice_id' => 'required|integer|exists:invoices,id',
         ]);
         $rawHtml = $request->input('html');
+        $fileName = $request->customer_name . '_invoice_' . $request->invoice_id .  '.pdf';
 
         // Wrap with Bootstrap
         $html = '
@@ -132,7 +130,7 @@ class InvoiceController extends Controller
                 <html lang="en">
                 <head>
                     <meta charset="UTF-8">
-                    <title>Invoice</title>
+                    <title>'. $fileName .'</title>
 
                     <!-- Bootstrap CDN (optional) -->
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -146,7 +144,6 @@ class InvoiceController extends Controller
                 </html>
             ';
 
-        $fileName = $request->customer_name . '_invoice_' . $request->invoice_id .  '.pdf';
         $pdfPath = storage_path("app/public/invoices/{$fileName}");
 
         if (!file_exists(dirname($pdfPath))) {

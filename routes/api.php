@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoiceMailController;
 use App\Http\Controllers\StipendController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,8 +30,14 @@ Route::apiResource('stipends' , StipendController::class);
 Route::apiResource('dashboard' , DashboardController::class);
 Route::apiResource('expenses' , App\Http\Controllers\ExpenseController::class);
 Route::apiResource('payments' , App\Http\Controllers\PaymentController::class);
+Route::apiResource('accounts' , App\Http\Controllers\AccountController::class);
+Route::apiResource('reports' , ReportController::class);
+Route::apiResource('transaction' , App\Http\Controllers\TransactionController::class);
 Route::post('/paystack/initialize', [App\Http\Controllers\PaymentController::class, 'initializePaystack']);
 Route::get('/paystack/callback', [App\Http\Controllers\PaymentController::class, 'paystackCallback']);
+Route::get('reports/profit-loss', [ReportController::class, 'profitLoss']);
+Route::get('/reports/balance-sheet/pdf', [ReportController::class, 'balanceSheetPdf']);
+Route::get('reports/balance-sheet', [ReportController::class, 'balanceSheet']);
 
 // invoices api routes
 Route::get('/invoice-stats', [InvoiceController::class, 'getInvoiceStats']);
