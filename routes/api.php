@@ -47,4 +47,4 @@ Route::post('/send-invoice', [InvoiceMailController::class, 'sendEmail']);
 
 // stipends receipt upload api routes
 Route::post('stipends/{id}/upload', [StipendController::class, 'uploadReceipt']);
-
+Route::post('stipends/import', [StipendController::class, 'import'])->name('stipends.import');
