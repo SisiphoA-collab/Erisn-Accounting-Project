@@ -13,13 +13,26 @@ class ExpenseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $expense = Expense::all();
+        $query = Expense::with('vendor');
 
-        return response()->json([
-            'expenses' => $expense,
-        ]);
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('vendor', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%");
+                })->orWhere('amount', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('category') && $request->category !== 'All') {
+            $query->where('category', $request->category);
+        }
+
+        $expenses = $query->orderBy('date', 'desc')->paginate(10);
+
+        return response()->json($expenses);
     }
 
     /**
@@ -30,14 +43,25 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
+         $request->validate([
+            'vendor_id' => 'required|exists:vendors,id',
+            'amount' => 'required|numeric|min:0',
+            'category' => 'required|string',
+            'date' => 'required|date',
+        ]);
+
         $expense = Expense::create($request->all());
 
-        //Increase vendor balance
         $vendor = Vendor::find($expense->vendor_id);
         $vendor->balance += $expense->amount;
         $vendor->save();
 
-        return $expense;
+        $expense->load('vendor');
+
+        return response()->json([
+            'message' => 'Expense added successfully.',
+            'expense' => $expense,
+        ]);
     }
 
     /**
@@ -60,7 +84,28 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+         $expense = Expense::findOrFail($id);
+
+        $request->validate([
+            'vendor_id' => 'required|exists:vendors,id',
+            'amount' => 'required|numeric|min:0',
+            'category' => 'required|string',
+            'date' => 'required|date',
+        ]);
+
+        if ($expense->vendor_id !== $request->vendor_id || $expense->amount != $request->amount) {
+            $oldVendor = Vendor::find($expense->vendor_id);
+            $oldVendor->balance -= $expense->amount;
+            $oldVendor->save();
+
+            $newVendor = Vendor::find($request->vendor_id);
+            $newVendor->balance += $request->amount;
+            $newVendor->save();
+        }
+
+        $expense->update($request->all());
+
+        return response()->json(['message' => 'Expense updated successfully.']);
     }
 
     /**
@@ -71,6 +116,14 @@ class ExpenseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $expense = Expense::findOrFail($id);
+
+        $vendor = Vendor::find($expense->vendor_id);
+        $vendor->balance -= $expense->amount;
+        $vendor->save();
+
+        $expense->delete();
+
+        return response()->json(['message' => 'Expense deleted successfully.']);
     }
 }

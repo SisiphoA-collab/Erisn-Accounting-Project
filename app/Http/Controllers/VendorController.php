@@ -53,6 +53,14 @@ class VendorController extends Controller
             'balance' => $request->balance,
         ]);
 
+        $expense = Expense::create([
+        'vendor_id' => $vendor->id,
+        'company_id' => $request->company_id,
+        'description' => 'Initial expense entry for new vendor',
+        'amount' => 0,
+        'date' => now(),
+        ]);
+
         return response()->json($vendor, 201);
     }
 

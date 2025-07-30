@@ -1,12 +1,20 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head } from '@inertiajs/vue3';
+</script>
+
 <template>
-  <!-- Flash message -->
+    <Head title="Customers" />
+
+    <AuthenticatedLayout>
+        <div class="py-2">
+            <div class="mx-auto max-w-7x sm:px-6">
+               <!-- Flash message -->
   <div class="p-2">
     <FlashMessage :message="message" :messageType="messageType" @close="empty" @cleared="message = null" />
   </div>
 
   <div>
-    <h1 class="text-outline">Customers</h1>
-    <hr />
     <button class="btn btn-primary mb-3 p-2" @click="addCustomer">Add Customer</button>
 
     <!-- Filter and Search Section -->
@@ -99,6 +107,9 @@
       </div>
     </div>
   </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
 </template>
 
 <script>

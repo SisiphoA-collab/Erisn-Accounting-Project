@@ -1,5 +1,5 @@
 <template>
-  <div v-if="links?.length > 1" class="flex justify-center text-end px-8 mt-4 space-x-2 small">
+  <div v-if="links?.length > 1" class="flex justify-end text-end px-8 mt-4 space-x-2 small">
     <button
       v-for="(link, index) in links"
       :key="index"

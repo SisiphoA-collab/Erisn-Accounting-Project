@@ -1,12 +1,19 @@
+<script setup>
+
+</script>
+
 <template>
-  <!-- Flash message -->
+    <Head title="Dashboard" />
+
+    <AuthenticatedLayout>
+        <div class="py-2">
+            <div class="mx-auto max-w-7x sm:px-6">
+                <!-- Flash message -->
   <div class="p-2">
     <FlashMessage :message="message" :messageType="messageType" @close="empty" @cleared="message = null" />
   </div>
 
   <div>
-    <h1 class="text-outline">Stipends List</h1>
-    <hr />
     <button class="btn btn-primary mb-3 p-2" @click="addStipend">Add Learner Stipend</button>
     <button class="btn btn-secondary mb-3 p-2 mx-2" @click="importCSV">Import CSV</button>
 
@@ -121,8 +128,7 @@
                 </option>
               </select>
             </div>
-
-
+            
             <div class="mb-3">
               <label class="form-label">month</label>
               <select class="form-select" v-model="form.month" required>
@@ -130,18 +136,6 @@
                   {{ month }} {{ currentYear }}
                 </option>
               </select>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Upload Receipt:</label>
-              <div v-if="form.status === 'Paid'" class="d-flex flex-row">
-                <input type="file" class="border form-control-sm mx-1"
-                  @change="e => selectedFiles[form.id] = e.target.files[0]" required />
-              </div>
-
-              <p v-else class="form-control-sm p-2 text-muted border" disabled>
-                Not uploaded - <span class="text-muted fst-italic">change status to upload receipt.</span>
-              </p>
             </div>
 
             <div class="mt-5 p-2 d-flex">
@@ -181,18 +175,21 @@
       </div>
     </div>
   </div>
-
-
+            </div>
+        </div>
+    </AuthenticatedLayout>
 </template>
 
 <script>
+import { Head } from '@inertiajs/vue3';
 import { ref, onMounted, watchEffect } from 'vue';
-import axios from 'axios';
 import Pagination from '../Components/Pagination.vue';
 import FlashMessage from '../Components/FlashMessage.vue';
+import { useHead } from '@vueuse/head';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 export default {
-  components: { Pagination, FlashMessage },
+  components: {AuthenticatedLayout, Pagination, FlashMessage },
   setup() {
     const stipends = ref([]);
     const currentPage = ref(1);
@@ -216,9 +213,10 @@ export default {
     const upload_receipt = ref(null);
     const selectedFiles = ref({});
 
-    const scrollToTop = () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    };
+    // Scroll to the top
+    const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Form data for adding/updating stipend
     const form = ref({
       id: null,
       learner_id: '',
@@ -228,23 +226,31 @@ export default {
       receipt_path: ''
     });
 
+    // Set page title dynamically using Inertia's useHead
+    useHead({
+      title: 'Stipends Management',
+      meta: [
+        { name: 'description', content: 'Manage stipends, upload receipts, and track payments.' }
+      ]
+    });
+
+    // Submit form (either create or update stipend)
     const handleSubmit = () => {
       if (isEdit.value) {
-        updateStipend()
+        updateStipend();
       } else {
-        saveStipend()
+        saveStipend();
       }
-      if (form.value.status == 'Paid') {
+      if (form.value.status === 'Paid' && selectedFiles.value[form.value.id]) {
         uploadReceipt(form.value.id, selectedFiles.value[form.value.id]);
       }
       fetchStipend();
     };
 
-    const importCSV = () => {
-          alert('Import CSV file');
-        };
+    // Import CSV action placeholder
+    const importCSV = () => alert('Import CSV file');
 
-    // Function to handle file uploads
+    // File upload for receipt
     const uploadReceipt = async (stipendId, file) => {
       if (!file) {
         message.value = 'Please select a file to upload.';
@@ -252,22 +258,17 @@ export default {
         scrollToTop();
         return;
       }
-
       const formData = new FormData();
       formData.append('receipt', file);
 
       try {
         const response = await axios.post(`/api/stipends/${stipendId}/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
         });
-
         message.value = response.data.message;
         messageType.value = response.data.type || 'success';
         scrollToTop();
         fetchStipend();
-
       } catch (error) {
         console.error('Error uploading Receipt:', error);
         message.value = 'Error uploading receipt.';
@@ -276,18 +277,19 @@ export default {
       }
     };
 
-
-
+    // Update selected status filter
     const updateSelected = (status) => {
       selectedStatus.value = status;
       fetchStipend();
     };
 
+    // Fetch stipend data with filtering, pagination, and search
     const fetchStipend = async (page = currentPage.value) => {
       try {
         const params = { page };
         if (selectedStatus.value && selectedStatus.value !== 'All') {
           params.status = selectedStatus.value;
+          
         }
         if (searchQuery.value) {
           params.search = searchQuery.value;
@@ -302,12 +304,13 @@ export default {
       }
     };
 
-
+    // Change page for pagination
     const changePage = (page) => {
       currentPage.value = page;
       fetchStipend(page);
     };
 
+    // Edit stipend
     const editStipend = (id) => {
       const stipend = stipends.value?.data?.find(i => i.id === id);
       if (stipend) {
@@ -319,6 +322,7 @@ export default {
       }
     };
 
+    // Delete stipend (confirmation modal)
     const delStipend = (stipend) => {
       if (stipend) {
         selectedStipend.value = stipend;
@@ -328,11 +332,14 @@ export default {
       }
     };
 
+    // Add new stipend
     const addStipend = () => {
       resetForm();
       isEdit.value = false;
       showModal.value = true;
     };
+
+    // Save stipend (create new)
     const saveStipend = async () => {
       try {
         const res = await axios.post('/api/stipends', form.value);
@@ -349,12 +356,12 @@ export default {
       }
     };
 
+    // Update stipend (edit existing)
     const updateStipend = async () => {
       try {
         const res = await axios.put(`/api/stipends/${form.value.id}`, form.value);
         message.value = res.data.message;
         messageType.value = res.data.type;
-
         fetchStipend();
         closeModal();
         scrollToTop();
@@ -366,6 +373,7 @@ export default {
       }
     };
 
+    // Delete stipend
     const deleteStipend = async (id) => {
       try {
         const res = await axios.delete(`/api/stipends/${id}`);
@@ -382,16 +390,19 @@ export default {
       }
     };
 
+    // Close modal (add/edit stipend)
     const closeModal = () => {
       showModal.value = false;
       selectedStipend.value = null;
     };
 
+    // Close confirmation modal
     const closeConfModal = () => {
       showConfModal.value = false;
       resetForm();
     };
 
+    // Reset stipend form
     const resetForm = () => {
       form.value = {
         id: null,
@@ -407,21 +418,20 @@ export default {
       fetchStipend();
     });
 
-
     watchEffect(() => {
       setTimeout(() => {
         message.value = '';
       }, 3000)
-    })
+    });
 
     const empty = () => {
       message.value = '';
-    }
+    };
 
     return {
-      stipends, currentPage, learners, statusOption, showModal, isEdit, links, delStipend, columns, upload_receipt,handleSubmit,
+      stipends, currentPage, learners, statusOption, showModal, isEdit, links, delStipend, columns, upload_receipt, handleSubmit,
       form, searchQuery, statuses: ['All', ...statusOption], selectedStatus, message, messageType, selectedFiles, currentMonth,
-      updateSelected, fetchStipend, changePage, addStipend, editStipend, saveStipend, empty, uploadReceipt, months,importCSV,
+      updateSelected, fetchStipend, changePage, addStipend, editStipend, saveStipend, empty, uploadReceipt, months, importCSV,
       updateStipend, deleteStipend, closeModal, resetForm, closeConfModal, showConfModal, selectedStipend, currentYear,
     };
   }

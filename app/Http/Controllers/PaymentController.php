@@ -15,13 +15,19 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $payment = Payment::all();
+        $query = Payment::query();
 
-        return response()->json([
-            'payments' => $payment,
-        ]);
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('method', 'like', "%$search%")
+                  ->orWhere('payment_date', 'like', "%$search%");
+        }
+
+        $payments = $query->orderBy('id', 'desc')->paginate(10);
+
+        return response()->json($payments);
     }
 
     public function initializePaystack(Request $request)
@@ -73,7 +79,8 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        //
+        $payment = Payment::findOrFail($id);
+        return response()->json($payment);
     }
 
     /**
@@ -130,7 +137,7 @@ class PaymentController extends Controller
             ]);
 
             //return response()->json(['message' => 'Payment verified and recorded.']);
-            return redirect('/#/invoices?payment=success');
+            return redirect('/invoices?payment=success');
         }
         return response()->json(['message' => 'Payment verification failed.'], 400);
     }
