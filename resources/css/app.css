@@ -124,3 +124,30 @@
 .sidebar-collapsed span {
     display: none;
 }
+
+.glass-card {
+  background-color: rgba(55, 65, 81, 0.2); /* Tailwind's bg-gray-700/20 */
+  backdrop-filter: blur(12px); /* Tailwind's backdrop-blur-md */
+  border: 2px solid rgba(229, 231, 235, 0.3); /* Tailwind's border-gray-200/30 */
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); /* Tailwind's shadow-lg */
+  border-radius: 1rem; /* Tailwind's rounded-xl */
+  color: white;
+  padding: 1.5rem; /* Tailwind's p-6 */
+}
+
+
+.text {
+  background-image: url('../assets/marble-textured.jpg');
+  background-size: cover;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-repeat: no-repeat;
+  color: transparent;
+}
+
+.bg-img {
+  background-image: url('../assets/bg-image.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

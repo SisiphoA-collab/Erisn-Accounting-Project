@@ -16,41 +16,47 @@ defineProps({
 </script>
 
 <template>
+
     <Head title="Profile" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
-            >
-                Profile
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800"
-                >
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h2 class="h5 mb-0 text-dark">Profile</h2>
+                        </div>
+                        <div class="card-body">
+                            <!-- UpdateProfileInformationForm -->
+                            <div id="update-profile-form">
+                                <!-- Replace with your Vue component -->
+                                <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status"
+                                    class="w-100" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800"
-                >
-                    <UpdatePasswordForm class="max-w-xl" />
+                <div class="col-lg-8 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <!-- UpdatePasswordForm -->
+                            <UpdatePasswordForm class="w-100" />
+                        </div>
+                    </div>
                 </div>
 
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800"
-                >
-                    <DeleteUserForm class="max-w-xl" />
+                <div class="col-lg-8 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <!-- DeleteUserForm -->
+                            <DeleteUserForm class="w-100" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
     </AuthenticatedLayout>
 </template>

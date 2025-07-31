@@ -3,70 +3,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InvoiceChart from '@/Components/InvoiceChart.vue';
 import DashboardCard from '@/Components/DashboardCard.vue';
 import { Head } from '@inertiajs/vue3';
-</script>
-
-<template>
-    <Head title="Dashboard" />
-
-    <AuthenticatedLayout>
-        <div class="py-2">
-            <div class="mx-auto max-w-7x sm:px-6">
-                <div class="space-y-6">
-        <!-- Dashboard Cards -->
-        <div class="row">
-            <DashboardCard
-                v-for="card in cardList"
-                :key="card.title"
-                :icon="card.icon"
-                :title="card.title"
-                :value="card.value"
-                :color="card.color"
-            />
-        </div>
-
-        <hr />
-
-        <!-- Activity & Actions -->
-        <div class="row">
-                <div class="col-md-6">
-                    <h3 class="text-outline">Recent Activity</h3>
-                    <ul class="list-group text-info">
-                        <li v-if="invoice"
-                            :class="`${formatDate(invoice.updated_at) === today ? 'text-info' : ''} list-group-item`">
-                            Invoice #{{ invoice.id }} sent to {{ invoice.customer?.name }}
-                        </li>
-                        <li class="list-group-item">Expense R500 recorded</li>
-                        <li v-if="stipend"
-                            :class="`${formatDate(stipend.updated_at) === today ? 'text-info' : ''} list-group-item`">
-                            Stipend paid to {{ stipend.learner?.name }}
-
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="text-outline">Quick Actions</h3>
-                    <button class="btn btn-primary me-2" @click="createInvoice">New Invoice</button>
-                    <button class="btn btn-secondary me-2" @click="addExpense">Add Expense</button>
-                    <button class="btn btn-success" @click="manageStipends">Manage Stipends</button>
-                </div>
-            </div>
-            
-        <!-- Chart -->
-        <div class="p-2 bg-white rounded shadow">
-            <InvoiceChart
-                :totalInvoices="totalInvoices"
-                :paidInvoices="paidInvoices"
-                :overdueInvoices="overdueInvoices"
-                :chartData="chartData"
-            />
-        </div>
-    </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
-</template>
-
-<script>
 import { ref, onMounted } from 'vue'
 import { router } from '@inertiajs/vue3'
 import axios from 'axios'
@@ -118,3 +54,65 @@ const fetchInvoiceStats = async () => {
 
 onMounted(fetchInvoiceStats)
 </script>
+
+<template>
+    <Head title="Dashboard" />
+
+    <AuthenticatedLayout>
+        <div class="py-2">
+            <div class="mx-auto max-w-7x sm:px-6">
+                <div class="space-y-6">
+        <!-- Dashboard Cards -->
+        <div class="row">
+            <DashboardCard
+                v-for="card in cardList"
+                :key="card.title"
+                :icon="card.icon"
+                :title="card.title"
+                :value="card.value"
+                :color="card.color"
+            />
+        </div>
+
+        <hr />
+
+        <!-- Activity & Actions -->
+        <div class="row">
+                <div class="col-md-6">
+                    <h3 class="text-outline">Recent Activity</h3>
+                    <ul class="list-group text-info">
+                        <li v-if="invoice"
+                            :class="`${formatDate(invoice.updated_at) === today ? 'text-info' : ''} list-group-item`">
+                            Invoice #{{ invoice.id }} sent to {{ invoice.customer?.name }}
+                        </li>
+                        <li class="list-group-item">Expense R500 recorded</li>
+                        <li v-if="stipend"
+                            :class="`${formatDate(stipend.updated_at) === today ? 'text-info' : ''} list-group-item`">
+                            Stipend paid to {{ stipend.learner?.name }}
+
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="text-outline">Quick Actions</h3>
+                    <button class="btn btn-primary me-2" @click="createInvoice">New Invoice</button>
+                    <button class="btn btn-secondary me-2" @click="addExpense">Add Expense</button>
+                    <button class="btn btn-success" @click="manageStipends">Manage Stipends</button>
+                </div>
+            </div>
+
+        <!-- Chart -->
+        <div class="p-2 bg-white rounded shadow">
+            <InvoiceChart
+                :totalInvoices="totalInvoices"
+                :paidInvoices="paidInvoices"
+                :overdueInvoices="overdueInvoices"
+                :chartData="chartData"
+            />
+        </div>
+    </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>
+

@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-
+import img from '../../assets/bg-image.jpg';
 defineProps({
     canLogin: {
         type: Boolean,
@@ -26,32 +26,44 @@ function handleImageError() {
 }
 </script>
 
+
 <template>
-    <Head title="Welcome" />
+    <Head title="Home">
+        <link rel="preconnect" href="https://rsms.me/" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    </Head>
 
-    <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-        <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
-            <Link v-if="$page.props.auth.user" :href="route('dashboard')"
-                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm">
-            Dashboard</Link>
+    <div :style="`background-image: url(${img});`"
+        class="d-flex flex-column align-items-center justify-content-center min-vh-100 text-white p-4"
+        style="background-size: cover; background-position: center; background-color: #1b1b18;">
 
-            <template v-else>
-                <Link :href="route('login')"
-                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm">
-                Log in</Link>
+        <header class="position-absolute top-0 w-100 mt-4">
+            <nav class="d-flex justify-content-end gap-3 px-4">
+                <Link v-if="$page.props.auth.user" :href="route('dashboard')"
+                    class="btn btn-outline-light fw-bold">
+                    Dashboard
+                </Link>
+                <template v-else>
+                    <Link :href="route('login')" class="btn btn-outline-info fw-bold">
+                        Log in
+                    </Link>
+                    <Link :href="route('register')" class="btn btn-outline-light fw-bold">
+                        Register
+                    </Link>
+                </template>
+            </nav>
+        </header>
 
-                <Link v-if="canRegister" :href="route('register')"
-                    class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm">
-                Register</Link>
-            </template>
+        <div class="container mt-5">
+            <main class="p-5 rounded">
+                <div class="text-center bg-dark bg-opacity-25 glass-card">
+                    <h1 class="display-1 fw-bold">
+                        <span class="d-block text">Welcome to</span>
+                        <span class="d-block text">Erisn Accounting</span>
+                        <span class="d-block text">System</span>
+                    </h1>
+                </div>
+            </main>
         </div>
-
-        <main class="shadow-2xl bg-red-600/50 rounded-lg place-content-center w-1/2 min-h-72">
-            <h1 
-                class="text-6xl font-mono font-extrabold text-white  text-center text-wrap">
-                Welcome To Erisn Accounting System
-            </h1>
-        </main>
     </div>
 </template>
