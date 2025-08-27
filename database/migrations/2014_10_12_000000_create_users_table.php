@@ -22,15 +22,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-        Schema::create('accounts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->enum('type', ['asset', 'liability', 'equity', 'income', 'expense']);
-            $table->string('category')->nullable();
-            $table->decimal('balance', 15, 2)->default(0);
-            $table->timestamps();
-        });
+    
     }
 
     /**

@@ -6,24 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-         Schema::create('companies', function (Blueprint $table) {
-                $table->id();              
-                $table->string('name');     
-                $table->string('industry'); 
-                $table->string('logo')->nullable(); 
-                $table->json('settings')->nullable(); 
-                $table->timestamps();       
-    });
+        Schema::disableForeignKeyConstraints();
+
+        Schema::create('companies', function (Blueprint $table) {
+            $table->id(); // BIGINT UNSIGNED AUTO_INCREMENT
+            $table->string('name');
+            $table->string('industry')->nullable();
+            $table->string('logo')->nullable();
+            $table->json('settings')->nullable();
+            $table->timestamps();
+
+            // Force engine + charset (important for FKs)
+            $table->engine = 'InnoDB';
+        });
+
+        Schema::enableForeignKeyConstraints();
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('companies');

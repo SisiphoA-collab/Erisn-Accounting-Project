@@ -10,9 +10,11 @@
             <div class="mx-auto max-w-7x sm:px-6">
                 <!-- Flash message -->
   <div class="p-2">
+    
     <FlashMessage :message="message" :messageType="messageType" @close="empty" @cleared="message = null" />
   </div>
-
+</div>
+</div>
   <div>
     <button class="btn btn-primary mb-3 p-2" @click="addStipend">Add Learner Stipend</button>
     <button class="btn btn-secondary mb-3 p-2 mx-2" @click="triggerCSVInput">Import CSV</button>
@@ -251,6 +253,7 @@
       </div>
     </div>
   </div>
+  </AuthenticatedLayout>
 </template>
 
 <script>
